@@ -1,0 +1,12 @@
+State,East,West
+q0,"{m,w,g,c}",{ }
+q1,"{w,c}","{m,g}"
+q2,"{m,w,c}",{g}
+q3,{c},"{m,w,g}"
+q4,{w},"{m,g,c}"
+q5,"{m,g,c}",{w}
+q6,"{m,g,w}",{c}
+q7,{g},"{m,w,c}"
+q8,"{m,g}","{w,c}"
+q9,{ },"{m,w,g,c}"
+q10,error,error
