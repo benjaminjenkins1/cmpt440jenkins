@@ -18,6 +18,8 @@
  */
 public class ManWolf {
 
+  private static final int ACCEPTING_STATE = 9;
+
   /**
    * The delta transition matrix
    * Rows:    states 0-10
@@ -64,7 +66,7 @@ public class ManWolf {
     }
 
     // check if state is an accepting state (9)
-    if(state == 9) return true;
+    if(state == ACCEPTING_STATE) return true;
     return false;
 
   }
