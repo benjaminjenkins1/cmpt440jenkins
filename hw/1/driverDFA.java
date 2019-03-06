@@ -1,10 +1,13 @@
 /**
- * driverDFA.java
- * 
- * Driver for Man-Wolf-Goat-Cabbage problem
+ * file:       driverDFA.java
+ * author:     Benjamin Jenkins
+ * course:     CMPT 440 - 111
+ * assignment: Homework 1
+ * due date:   March 12, 2019
+ * version:    1.0
  *
- * Benjamin Jenkins
- * 3/6/2019
+ * This file contains a driver for checking solutions to
+ * the Man-Wolf-Goat-Cabbage problem using the ManWolf class.
  */
 
  public class driverDFA {

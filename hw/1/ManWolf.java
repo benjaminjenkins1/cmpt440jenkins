@@ -1,12 +1,21 @@
 /**
- * ManWolf.java
- * 
- * DFA class for the Man-Wolf-Goat-Cabbage problem
- * 
- * Benjamin Jenkins
- * 3/6/2019
+ * file:       ManWolf.java
+ * author:     Benjamin Jenkins
+ * course:     CMPT 440 - 111
+ * assignment: Homework 1
+ * due date:   March 12, 2019
+ * version:    1.0
+ *
+ * This file contains the declaration of the ManWolf class
  */
 
+
+/**
+ * ManWolf
+ *  
+ * This class provides a method for checking whether a string
+ * is accepted for the Man-Wolf-Goat-Cabbage problem.
+ */
 public class ManWolf {
 
   /**
@@ -29,8 +38,15 @@ public class ManWolf {
   };
 
   /**
-   * Process a string and check if it is accepted
-   * for the Man-Wolf-Goat-Cabbage problem
+   * process
+   *
+   * Process a string and check if it is an accepted
+   * solution to the Man-Wolf-Goat-Cabbage problem.
+   * 
+   * Parameters:
+   *   s       - the string to process
+   * Returns:
+   *   boolean - whether the string is accepted
    */
   public static boolean process(String s) {
 
@@ -54,8 +70,15 @@ public class ManWolf {
   }
 
   /**
+   * translate
+   *
    * Translates a string, {w,g,c,n}*, to an array of integers
    * corresponding to columns in the delta transition matrix
+   * 
+   * Parameters:
+   *   s     - string to translate
+   * Returns:
+   *   int[] - array of column indices
    */
   private static int[] translate(String s) {
     int len = s.length();
