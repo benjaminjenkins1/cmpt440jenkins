@@ -33,7 +33,7 @@ public class World {
 
 }
 
-private class CharacterPosition {
+class CharacterPosition {
   public int posX;
   public int posY;
   CharacterPosition(int posX, int posY) {
