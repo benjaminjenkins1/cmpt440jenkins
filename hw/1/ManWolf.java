@@ -65,9 +65,7 @@ public class ManWolf {
       }
     }
 
-    // check if state is an accepting state (9)
-    if(state == ACCEPTING_STATE) return true;
-    return false;
+    return (state == ACCEPTING_STATE);
 
   }
 
