@@ -10,6 +10,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 public class npc_project extends ApplicationAdapter {
 	private SpriteBatch batch;
@@ -18,10 +22,23 @@ public class npc_project extends ApplicationAdapter {
 	private float elapsedTime = 0;
 	private float posX, posY;
 	private OrthographicCamera camera;
+	private TiledMap tiledMap;
+	private TiledMapRenderer tiledMapRenderer;
 	
 	@Override
 	public void create () {
-		camera = new OrthographicCamera(1280, 720);
+
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
+
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, w, h);
+		camera.zoom = 0.375f;
+		camera.update();
+
+		tiledMap = new TmxMapLoader().load("GameMap.tmx");
+		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+
 		batch = new SpriteBatch();
 		textureAtlas = new TextureAtlas(Gdx.files.internal("spritesheet.atlas"));
 
@@ -63,9 +80,9 @@ public class npc_project extends ApplicationAdapter {
 			}
 			@Override
 			public boolean scrolled(int amount) {
-				float zoomAmount = (float) amount / 2;
+				float zoomAmount = (float) amount / 8;
 				Gdx.app.log("CameraZoom", String.format("%f", camera.zoom));
-				if(camera.zoom + zoomAmount >= 1 && camera.zoom + zoomAmount <= 5) camera.zoom += zoomAmount;
+				if(camera.zoom + zoomAmount > 0.2 && camera.zoom + zoomAmount <= 1) camera.zoom += zoomAmount;
 				camera.update();
 				return true;
 			}
@@ -74,14 +91,12 @@ public class npc_project extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		elapsedTime += Gdx.graphics.getDeltaTime();
-		batch.draw(rotateUpAnimation.getKeyFrame(elapsedTime, true), posX, posY);
-		batch.end();
+		camera.update();
+		tiledMapRenderer.setView(camera);
+		tiledMapRenderer.render();
 	}
 	
 	@Override
