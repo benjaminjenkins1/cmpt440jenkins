@@ -8,35 +8,49 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.Input.Keys;
-
-import com.bjenkins.world.WorldManager;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Con
+
+
+import com.badlogic.gdx.utils.TimeUtils;
+import com.bjenkins.world.WorldManager;
+
 
 public class npc_project extends ApplicationAdapter {
+
+
+	static final float TIME_STEP = 1.0f / 60.0f;
+	static final int VELOCITY_ITERATIONS = 8;
+	static final int POSITION_ITERATIONS = 3;
+
+	private float accumulator = 0;
+	private float currentTime = 0;
 
 	private WorldManager worldManager;
 
 	private SpriteBatch batch;
-	private TextureAtlas textureAtlas;
-	private Animation<AtlasRegion> rotateUpAnimation;
-	private float elapsedTime = 0;
-	private float posX, posY;
+	//private TextureAtlas textureAtlas;
+	//private Animation<AtlasRegion> rotateUpAnimation;
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer debugRenderer;
 	private TiledMap tiledMap;
 	private TiledMapRenderer tiledMapRenderer;
 
+	private double accumulator;
+	private double currentTime;
+
 	@Override
 	public void create () {
 
-		worldManager = new WorldManager();
+		Box2D.init();
 
-		world = new World(new Vector2(0,0), true);
+		worldManager = new WorldManager(0,0);
+
 		debugRenderer = new Box2DDebugRenderer();
 
 		camera = new OrthographicCamera(1280, 720);
@@ -73,13 +87,25 @@ public class npc_project extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+
+		double newTime = TimeUtils.millis() / 1000.0;
+		double frameTime = Math.min(newTime	- currentTime, 0.25);
+		float deltaTime = (float)frameTime;
+		currentTime = newTime;
+		while(accumulator >= TIME_STEP) {
+			worldManager.world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+			accumulator -= TIME_STEP;
+			worldManager.update();
+		}
+		worldManager.interpolate(accumulator / step);
+
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		elapsedTime += Gdx.graphics.getDeltaTime();
+
 		//batch.draw(rotateUpAnimation.getKeyFrame(elapsedTime, true), posX, posY);
 		batch.end();
 
@@ -94,5 +120,6 @@ public class npc_project extends ApplicationAdapter {
 		batch.dispose();
 		textureAtlas.dispose();
 	}
+
 }
 
