@@ -10,17 +10,33 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
+//import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.math.Vector2;
+
+import com.bjenkins.world.WorldManager;
 
 public class npc_project extends ApplicationAdapter {
+
+	private WorldManager worldManager;
+
 	private SpriteBatch batch;
 	private TextureAtlas textureAtlas;
 	private Animation<AtlasRegion> rotateUpAnimation;
 	private float elapsedTime = 0;
 	private float posX, posY;
 	private OrthographicCamera camera;
+	private Box2DDebugRenderer debugRenderer;
 	
 	@Override
 	public void create () {
+
+		worldManager = new WorldManager();
+
+		world = new World(new Vector2(0,0), true);
+		debugRenderer = new Box2DDebugRenderer();
+
 		camera = new OrthographicCamera(1280, 720);
 		batch = new SpriteBatch();
 		textureAtlas = new TextureAtlas(Gdx.files.internal("spritesheet.atlas"));
@@ -38,38 +54,7 @@ public class npc_project extends ApplicationAdapter {
 		rotateUpFrames[9] = textureAtlas.findRegion("0010");
 		rotateUpAnimation = new Animation(0.1f, rotateUpFrames);
 
-		Gdx.input.setInputProcessor(new InputAdapter() {
-			@Override
-			public boolean keyDown(int keyCode) {
-				float moveAmount = 1.0f;
-				if(Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) moveAmount = 10.0f;
-
-				// movement
-				if(keyCode == Keys.LEFT)  posX -= moveAmount;
-				if(keyCode == Keys.RIGHT) posX += moveAmount;
-				if(keyCode == Keys.DOWN)    posY -= moveAmount;
-				if(keyCode == Keys.UP)  posY += moveAmount;
-
-
-				// camera
-				if(keyCode == Keys.W) camera.translate(0,  moveAmount);
-				if(keyCode == Keys.S) camera.translate(0, -moveAmount);
-				if(keyCode == Keys.A) camera.translate(-moveAmount, 0);
-				if(keyCode == Keys.D) camera.translate( moveAmount, 0);
-
-				camera.update();
-
-				return true;
-			}
-			@Override
-			public boolean scrolled(int amount) {
-				float zoomAmount = (float) amount / 2;
-				Gdx.app.log("CameraZoom", String.format("%f", camera.zoom));
-				if(camera.zoom + zoomAmount >= 1 && camera.zoom + zoomAmount <= 5) camera.zoom += zoomAmount;
-				camera.update();
-				return true;
-			}
-		});
+		Gdx.input.setInputProcessor(worldManager.gameInputAdapter);
 	}
 
 	@Override
@@ -80,12 +65,13 @@ public class npc_project extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		elapsedTime += Gdx.graphics.getDeltaTime();
-		batch.draw(rotateUpAnimation.getKeyFrame(elapsedTime, true), posX, posY);
+		//batch.draw(rotateUpAnimation.getKeyFrame(elapsedTime, true), posX, posY);
 		batch.end();
 	}
 	
 	@Override
 	public void dispose () {
+		worldManager.world.dispose();
 		batch.dispose();
 		textureAtlas.dispose();
 	}
