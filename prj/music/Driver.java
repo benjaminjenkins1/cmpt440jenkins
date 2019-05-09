@@ -30,10 +30,11 @@ public class Driver {
     int trackNumber = sc.nextInt();
     System.out.print("Channel number:");
     int channelNumber = sc.nextInt();
+    sc.close();
 
     MusicPFA generator = new MusicPFA(new File(filename), trackNumber, channelNumber);
 
-    /**
+    /*
     Sequence sequence = MidiSystem.getSequence(new File(filename));
 
     for (Track track : sequence.getTracks()) {

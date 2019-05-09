@@ -96,12 +96,16 @@ public class MusicPFA {
     this.transitionProbabilityMap = new HashMap<State, ArrayList<State>>();
     for(int i = 0; i < tickArr.length; i++) {
       State thisState = this.tickMap.get(tickArr[i]);
-      if(this.transitionProbabilityMap.containsKey(thisState) && i + 1 < tickArr.length) {
+      if(this.transitionProbabilityMap.containsKey(thisState) && i+1 < tickArr.length) {
         ArrayList<State> transitionStates = this.transitionProbabilityMap.get(this.tickMap.get(tickArr[i]));
         transitionStates.add(this.tickMap.get(tickArr[i+1]));
       }
       else {
-        this.transitionProbabilityMap.put(thisState, new ArrayList<State>());
+        ArrayList<State> transitionStates = new ArrayList<State>();
+        if(i+1 < tickArr.length) {
+          transitionStates.add(this.tickMap.get(tickArr[i+1]));
+        }
+        this.transitionProbabilityMap.put(thisState, transitionStates);
       }
     }
 
@@ -116,14 +120,12 @@ public class MusicPFA {
       System.out.println("%");
       System.out.println(s.toString());
       for(State ts : this.transitionProbabilityMap.get(s)) {
-        System.out.println("&");
+        System.out.println("  &");
         System.out.println(ts.toString());
-        System.out.println("&");
+        System.out.println("  &");
       }
       System.out.println("%");
     }
-
-
 
   }
 
@@ -186,7 +188,7 @@ public class MusicPFA {
 }
 
 /**
- * The note class
+ * The Note class
  * Contains key information for a note
  */
 class Note {
@@ -218,7 +220,7 @@ class Note {
 /**
  * Comparator for sorting notes
  * 
- * Sort by key, then velocity, then duration
+ * Sort by key
  */
 class NoteComparator implements Comparator<Note> {
   public int compare(Note a, Note b) {
